@@ -1,6 +1,9 @@
 #encoding: utf-8
-module V1
+require 'rack/contrib'
+module V2
 	class Todos < Grape::API
+    use Rack::JSONP
+    format :json
 
 		resources :todos do
 			desc "获取所有待办事项"
@@ -36,7 +39,7 @@ module V1
 			patch '/:id' do
 				todo = Todo.find(params[:id])
 				if todo.update_attributes({content: params[:content]})
-					{success: true}
+					{success: true, id: todo.id, content: todo.content}
 				else
 					status 500
 					{success: false}
@@ -53,6 +56,28 @@ module V1
 					{success: false}
 				end
 			end
+
+      desc "JSONP GET"
+      get '/:id/update' do
+        todo = Todo.find(params[:id])
+				if todo.update_attributes({content: params[:content]})
+					{success: true, id: todo.id, content: todo.content}
+				else
+					status 500
+					{success: false}
+				end
+      end
+
+      desc "JSONP DELETE"
+      get '/:req/delete' do
+        todo = Todo.find(params[:id])
+				if todo.destroy
+					{success: true}
+				else
+					status 500
+					{success: false}
+				end
+      end
 
 		end
 

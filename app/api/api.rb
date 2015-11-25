@@ -13,4 +13,5 @@ class API < Grape::API
 	end
   # Mount the different versions api
   mount V1::Base
+  mount V2::Base
 end
