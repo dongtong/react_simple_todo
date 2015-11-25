@@ -69,10 +69,21 @@ module V2
       end
 
       desc "JSONP DELETE"
-      get '/:req/delete' do
+      get '/:id/delete' do
         todo = Todo.find(params[:id])
 				if todo.destroy
 					{success: true}
+				else
+					status 500
+					{success: false}
+				end
+      end
+
+      desc "JSONP POST"
+      get '/add' do
+        todo = Todo.new(content: params[:content])
+				if todo.save
+					{success: true, id: todo.id, content: todo.content}
 				else
 					status 500
 					{success: false}
